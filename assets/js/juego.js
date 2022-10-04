@@ -8,7 +8,13 @@
 let deck = [];
 const types = ["C", "D", "H", "S"];
 const letter = ["A", "J", "Q", "K"];
+let pountsPlayer = 0;
+let pountsComputer = 0;
 
+//Referencias HTML
+const btnPedir = document.querySelector("#btnPedir");
+// const smallPounts = document.querySelector("#pount_player");
+const smallPounts = document.querySelectorAll("small");
 //Esta funcion crea un nuevo Deck o baraja
 const createDeck = () => {
   for (let i = 2; i <= 10; i++) {
@@ -35,12 +41,11 @@ const orderChart = () => {
     throw "No hay Cartas en el Deck";
   }
   const chart = deck.pop();
-  console.log(deck);
-  console.log(chart); // carta deve de ser de la baraja
   return chart;
 };
 //orderChart();
 
+//Esta funcion nos permite contar el valor de las cartas
 const valueChart = (chart) => {
   const value = chart.substring(0, chart.length - 1);
   return isNaN(value) ? (value === "A" ? 11 : 10) : value * 1;
@@ -58,5 +63,12 @@ const valueChart = (chart) => {
 //   }
 //   console.log(pounts);
 // };
-value = valueChart(orderChart());
-console.log({ value });
+
+//eventos
+btnPedir.addEventListener("click", () => {
+  const chart = orderChart();
+  //   console.log(chart);
+  pountsPlayer = pountsPlayer + valueChart(chart);
+  //   console.log(pountsPlayer);
+  smallPounts[0].innerHTML = pountsPlayer;
+});
