@@ -13,7 +13,10 @@ let pountsComputer = 0;
 
 //Referencias HTML
 const btnPedir = document.querySelector("#btnPedir");
+const btnDetener = document.querySelector("#btnDetener");
+const btnNuevoJuego = document.querySelector("#btnNuevo");
 const divCartasJugador = document.querySelector("#jugador-cartas");
+const divCartasComputadora = document.querySelector("#computadora-cartas");
 // const smallPounts = document.querySelector("#pount_player");
 const smallPounts = document.querySelectorAll("small");
 //Esta funcion crea un nuevo Deck o baraja
@@ -34,6 +37,7 @@ const createDeck = () => {
   console.log(deck);
   return deck;
 };
+
 createDeck();
 
 //Esta funcion me permite tomar una carta
@@ -65,6 +69,35 @@ const valueChart = (chart) => {
 //   console.log(pounts);
 // };
 
+//turno de la computadora
+const turnComputer = (pountsMin) => {
+  do {
+    const chart = orderChart();
+    pountsComputer = pountsComputer + valueChart(chart);
+    smallPounts[1].innerHTML = pountsComputer;
+
+    //<img class="cartas" src="assets/cartas/10D.png" alt="" />
+    const imgCarta = document.createElement("img");
+    imgCarta.src = `assets/cartas/${chart}.png`;
+    imgCarta.classList.add("cartas");
+    divCartasComputadora.append(imgCarta);
+
+    if (pountsMin > 21) {
+      break;
+    }
+  } while (pountsComputer < pountsMin && pountsMin < 21);
+  setTimeout(() => {
+    //Instruccion utilizada para dar un tiempo para que la aplicacion reponda
+    if (pountsMin > 21 || pountsComputer < pountsMin || pountsComputer === 21) {
+      alert("Gana Computadora");
+    } else if (pountsMin === 21 || pountsMin < pountsComputer) {
+      alert("Gana Jugador");
+    } else if (pountsComputer === pountsPlayer) {
+      alert("Empate Tecnico");
+    }
+  }, 20);
+};
+
 //eventos
 btnPedir.addEventListener("click", () => {
   const chart = orderChart();
@@ -72,7 +105,6 @@ btnPedir.addEventListener("click", () => {
   pountsPlayer = pountsPlayer + valueChart(chart);
   //   console.log(pountsPlayer);
   smallPounts[0].innerHTML = pountsPlayer;
-
   //<img class="cartas" src="assets/cartas/10D.png" alt="" />
   const imgCarta = document.createElement("img");
   imgCarta.src = `assets/cartas/${chart}.png`;
@@ -82,8 +114,31 @@ btnPedir.addEventListener("click", () => {
   if (pountsPlayer > 21) {
     console.warn("Perdio Palomo");
     btnPedir.disabled = true;
+    turnComputer(pountsPlayer);
+    btnDetener.disabled = true;
   } else if (pountsPlayer === 21) {
     console.log("Coronaste palomo");
     btnPedir.disabled = true;
+    turnComputer(pountsPlayer);
+    btnDetener.disabled = true;
   }
+});
+
+btnDetener.addEventListener("click", () => {
+  btnPedir.disabled = true;
+  btnDetener.disabled = true;
+  turnComputer(pountsPlayer);
+});
+btnNuevoJuego.addEventListener("click", () => {
+  console.clear();
+  deck = [];
+  deck = createDeck();
+  pountsPlayer = 0;
+  pountsComputer = 0;
+  smallPounts[0].innerText = 0;
+  smallPounts[1].innerText = 0;
+  divCartasJugador.innerHTML = "";
+  divCartasComputadora.innerHTML = "";
+  btnPedir.disabled = false;
+  btnDetener.disabled = false;
 });
