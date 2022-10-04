@@ -39,4 +39,24 @@ const orderChart = () => {
   console.log(chart); // carta deve de ser de la baraja
   return chart;
 };
-orderChart();
+//orderChart();
+
+const valueChart = (chart) => {
+  const value = chart.substring(0, chart.length - 1);
+  return isNaN(value) ? (value === "A" ? 11 : 10) : value * 1;
+};
+//##########Otra Forma##############
+//   let pounts = 0;
+//   !isNaN(value) ? (pounts = value * 1) : (pounts = value === "A" ? 11 : 10);
+//   console.log(pounts);
+// };
+//##########Otra Forma##############
+//   if (isNaN(value)) {
+//     pounts = value === "A" ? 11 : 10;
+//   } else {
+//     pounts = value * 1;
+//   }
+//   console.log(pounts);
+// };
+value = valueChart(orderChart());
+console.log({ value });
