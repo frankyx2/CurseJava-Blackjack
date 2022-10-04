@@ -13,6 +13,7 @@ let pountsComputer = 0;
 
 //Referencias HTML
 const btnPedir = document.querySelector("#btnPedir");
+const divCartasJugador = document.querySelector("#jugador-cartas");
 // const smallPounts = document.querySelector("#pount_player");
 const smallPounts = document.querySelectorAll("small");
 //Esta funcion crea un nuevo Deck o baraja
@@ -71,4 +72,18 @@ btnPedir.addEventListener("click", () => {
   pountsPlayer = pountsPlayer + valueChart(chart);
   //   console.log(pountsPlayer);
   smallPounts[0].innerHTML = pountsPlayer;
+
+  //<img class="cartas" src="assets/cartas/10D.png" alt="" />
+  const imgCarta = document.createElement("img");
+  imgCarta.src = `assets/cartas/${chart}.png`;
+  imgCarta.classList.add("cartas");
+  divCartasJugador.append(imgCarta);
+
+  if (pountsPlayer > 21) {
+    console.warn("Perdio Palomo");
+    btnPedir.disabled = true;
+  } else if (pountsPlayer === 21) {
+    console.log("Coronaste palomo");
+    btnPedir.disabled = true;
+  }
 });
