@@ -1,4 +1,4 @@
-(() => {
+const miModule = (() => {
   "use strict";
 
   let deck = [];
@@ -18,9 +18,14 @@
 
   const inizializeGame = (numPlayers = 2) => {
     deck = createDeck();
+    pountsPlayers = [];
     for (let i = 0; i < numPlayers; i++) {
       pountsPlayers.push(0);
     }
+    smallPounts.forEach((elem) => (elem.innerText = 0));
+    divChartsPlayer.forEach((elem) => (elem.innerHTML = ""));
+    btnPedir.disabled = false;
+    btnDetener.disabled = false;
   };
 
   //Esta funcion crea un nuevo Deck o baraja
@@ -31,13 +36,16 @@
         deck.push(i + type);
       }
     }
+
     for (let i = 0; i < letter.length; i++) {
       for (let type of types) {
         deck.push(letter[i] + type);
       }
     }
+
     return _.shuffle(deck); // con la libreria undescore barajamos el arreglo
   };
+
   //Esta funcion me permite tomar una carta
   const orderChart = () => {
     if (deck.length === 0) {
@@ -45,6 +53,7 @@
     }
     return deck.pop();
   };
+
   //Esta funcion nos permite contar el valor de las cartas
   const valueChart = (chart) => {
     const value = chart.substring(0, chart.length - 1);
@@ -77,6 +86,20 @@
     imgCarta.classList.add("cartas");
     divChartsPlayer[turn].append(imgCarta);
   };
+
+  const determineWinner = () => {
+    const [pountsMin, pountsComputer] = pountsPlayers;
+    setTimeout(() => {
+      //Instruccion utilizada para dar un tiempo para que la aplicacion reponda
+      if (pountsMin > 21 || pountsComputer === 21) {
+        alert("Gana Computadora");
+      } else if (pountsMin === 21 || pountsMin < pountsComputer) {
+        alert("Gana Jugador");
+      } else if (pountsComputer === pountsMin) {
+        alert("Empate Tecnico");
+      }
+    }, 20);
+  };
   //turno de la computadora
   const turnComputer = (pountsMin) => {
     let pountsComputer = 0;
@@ -84,29 +107,8 @@
       const chart = orderChart();
       pountsComputer = accumulatePoints(chart, pountsPlayers.length - 1);
       createChart(chart, pountsPlayers.length - 1);
-      // const imgCarta = document.createElement("img");
-      // imgCarta.src = `assets/cartas/${chart}.png`;
-      // imgCarta.classList.add("cartas");
-      // divCartasComputadora.append(imgCarta);
-
-      if (pountsMin > 21) {
-        break;
-      }
     } while (pountsComputer < pountsMin && pountsMin < 21);
-    setTimeout(() => {
-      //Instruccion utilizada para dar un tiempo para que la aplicacion reponda
-      if (
-        pountsMin > 21 ||
-        pountsComputer < pountsMin ||
-        pountsComputer === 21
-      ) {
-        alert("Gana Computadora");
-      } else if (pountsMin === 21 || pountsMin < pountsComputer) {
-        alert("Gana Jugador");
-      } else if (pountsComputer === pountsPlayer) {
-        alert("Empate Tecnico");
-      }
-    }, 20);
+    determineWinner();
   };
 
   //eventos
@@ -129,22 +131,16 @@
   });
 
   btnDetener.addEventListener("click", () => {
+    let pountsPlayer = divChartsPlayer[0];
     btnPedir.disabled = true;
     btnDetener.disabled = true;
     turnComputer(pountsPlayer);
   });
   btnNuevoJuego.addEventListener("click", () => {
-    // console.clear();
-    // deck = [];
     inizializeGame();
-    deck = createDeck();
-    // pountsPlayer = 0;
-    // pountsComputer = 0;
-    // smallPounts[0].innerText = 0;
-    // smallPounts[1].innerText = 0;
-    // divCartasJugador.innerHTML = "";
-    // divCartasComputadora.innerHTML = "";
-    // btnPedir.disabled = false;
-    // btnDetener.disabled = false;
   });
+
+  return {
+    nuevoJuego: inizializeGame,
+  };
 })();
